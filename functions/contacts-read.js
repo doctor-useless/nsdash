@@ -1,3 +1,4 @@
+/* Import faunaDB sdk */
 const faunadb = require('faunadb')
 const getId = require('./utils/getId')
 
@@ -7,10 +8,9 @@ const client = new faunadb.Client({
 })
 
 exports.handler = (event, context) => {
-  const data = JSON.parse(event.body)
   const id = getId(event.path)
-  console.log(`Function 'todo-update' invoked. update id: ${id}`)
-  return client.query(q.Update(q.Ref(`classes/todos/${id}`), {data}))
+  console.log(`Function 'contact-read' invoked. Read id: ${id}`)
+  return client.query(q.Get(q.Ref(`classes/contacts/${id}`)))
     .then((response) => {
       console.log('success', response)
       return {

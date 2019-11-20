@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import styles from './SettingsMenu.css' // eslint-disable-line
+import './SettingsMenu.css' // eslint-disable-line
 
 export default class Menu extends Component {
   componentDidMount() {
@@ -17,7 +17,7 @@ export default class Menu extends Component {
   }
   handleDelete = (e) => {
     e.preventDefault()
-    const deleteConfirm = window.confirm("Are you sure you want to clear all completed todos?");
+    const deleteConfirm = window.confirm("Are you sure you want to clear all completed contacts?");
     if (deleteConfirm) {
       console.log('delete')
       this.props.handleClearCompleted()
@@ -35,11 +35,11 @@ export default class Menu extends Component {
           <h2>Settings</h2>
           <div className='settings-section' onClick={this.handleDelete}>
             <button className='btn-danger'>
-              Clear All Completed Todos
+              Clear All Completed contacts
             </button>
           </div>
           <div className='settings-section' style={{display: 'none'}}>
-            <div className='settings-header'>Sort Todos:</div>
+            <div className='settings-header'>Sort contacts:</div>
             <div className='settings-options-wrapper' data-setting='sortOrder'>
               <div
                 className='settings-option'

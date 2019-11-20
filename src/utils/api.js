@@ -1,7 +1,7 @@
 /* Api methods to call /functions */
 
 const create = (data) => {
-  return fetch('/.netlify/functions/todos-create', {
+  return fetch('/.netlify/functions/contacts-create', {
     body: JSON.stringify(data),
     method: 'POST'
   }).then(response => {
@@ -10,13 +10,13 @@ const create = (data) => {
 }
 
 const readAll = () => {
-  return fetch('/.netlify/functions/todos-read-all').then((response) => {
+  return fetch('/.netlify/functions/contacts-read-all').then((response) => {
     return response.json()
   })
 }
 
-const update = (todoId, data) => {
-  return fetch(`/.netlify/functions/todos-update/${todoId}`, {
+const update = (contactId, data) => {
+  return fetch(`/.netlify/functions/contacts-update/${contactId}`, {
     body: JSON.stringify(data),
     method: 'POST'
   }).then(response => {
@@ -24,18 +24,18 @@ const update = (todoId, data) => {
   })
 }
 
-const deleteTodo = (todoId) => {
-  return fetch(`/.netlify/functions/todos-delete/${todoId}`, {
+const deleteContact = (contactId) => {
+  return fetch(`/.netlify/functions/contacts-delete/${contactId}`, {
     method: 'POST',
   }).then(response => {
     return response.json()
   })
 }
 
-const batchDeleteTodo = (todoIds) => {
-  return fetch(`/.netlify/functions/todos-delete-batch`, {
+const batchDeleteContact = (contactIds) => {
+  return fetch(`/.netlify/functions/contacts-delete-batch`, {
     body: JSON.stringify({
-      ids: todoIds
+      ids: contactIds
     }),
     method: 'POST'
   }).then(response => {
@@ -47,6 +47,6 @@ export default {
   create: create,
   readAll: readAll,
   update: update,
-  delete: deleteTodo,
-  batchDelete: batchDeleteTodo
+  delete: deleteContact,
+  batchDelete: batchDeleteContact
 }

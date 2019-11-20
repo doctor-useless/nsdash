@@ -1,16 +1,21 @@
 /* Import faunaDB sdk */
 const faunadb = require('faunadb')
-const getId = require('./utils/getId')
 
 const q = faunadb.query
 const client = new faunadb.Client({
   secret: process.env.FAUNADB_SERVER_SECRET
 })
 
-exports.handler = (event, context) => {
-  const id = getId(event.path)
-  console.log(`Function 'todo-read' invoked. Read id: ${id}`)
-  return client.query(q.Get(q.Ref(`classes/todos/${id}`)))
+exports.handler = async (event, context) => {
+  const data = JSON.parse(event.body)
+  console.log('data', data)
+  console.log('Function `contact-delete-batch` invoked', data.ids)
+  // construct batch query from IDs
+  const deleteAllCompletedcontactQuery = data.ids.map((id) => {
+    return q.Delete(q.Ref(`classes/contacts/${id}`))
+  })
+  // Hit fauna with the query to delete the completed items
+  return client.query(deleteAllCompletedcontactQuery)
     .then((response) => {
       console.log('success', response)
       return {

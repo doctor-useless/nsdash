@@ -1,6 +1,6 @@
 {
-  "short_name": "FaunaDB Example",
-  "name": "Fauna + Netlify Functions",
+  "short_name": "NS Dash",
+  "name": "NS Photo & Film Dashboard",
   "icons": [
     {
       "src": "favicon.ico",

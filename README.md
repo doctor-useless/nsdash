@@ -154,9 +154,9 @@ Fan of VanillaJS? By all means, have at it!
 
 ### 2. Set up FaunaDB
 
-We are using FaunaDB to hold and store all of our todo data.
+We are using FaunaDB to hold and store all of our contact data.
 
-To setup a FaunaDB account and get the API key we'll use to scaffold out our todos database, head over to [https://dashboard.fauna.com/accounts/register](https://dashboard.fauna.com/accounts/register) and create a free Fauna Cloud account.
+To setup a FaunaDB account and get the API key we'll use to scaffold out our contacts database, head over to [https://dashboard.fauna.com/accounts/register](https://dashboard.fauna.com/accounts/register) and create a free Fauna Cloud account.
 
 1. **Sign up**
 
@@ -187,7 +187,7 @@ To setup a FaunaDB account and get the API key we'll use to scaffold out our tod
 
     Replace `YourFaunaDBSecretHere` with the value of the secret that you copied in the previous step.
 
-    Add the [/scripts/bootstrap-fauna-database.js](https://github.com/netlify/netlify-faunadb-example/blob/f965df497f0de507c2dfdb1a8a32a81bbd939314/scripts/bootstrap-fauna-database.js) to the root directory of the project. This is an idempotent script that you can run one million times and have the same result (one todos database)
+    Add the [/scripts/bootstrap-fauna-database.js](https://github.com/netlify/netlify-faunadb-example/blob/f965df497f0de507c2dfdb1a8a32a81bbd939314/scripts/bootstrap-fauna-database.js) to the root directory of the project. This is an idempotent script that you can run one million times and have the same result (one contacts database)
 
     Next up, add the bootstrap command to npm scripts in your `package.json` file
 
@@ -205,7 +205,7 @@ To setup a FaunaDB account and get the API key we'll use to scaffold out our tod
     npm run bootstrap
     ```
 
-    If you log in to the [FaunaDB dashboard](https://dashboard.fauna.com/) you will see your todo database.
+    If you log in to the [FaunaDB dashboard](https://dashboard.fauna.com/) you will see your contact database.
 
 ### 3. Create a function
 
@@ -347,7 +347,7 @@ Let's rock and roll.
 
 4. **Install FaunaDB and write the create function**
 
-    We are going to be using the `faunadb` npm module to call into our todos index in FaunaDB.
+    We are going to be using the `faunadb` npm module to call into our contacts index in FaunaDB.
 
     So install it in the project.
 
@@ -355,10 +355,10 @@ Let's rock and roll.
     npm i faunadb --save
     ```
 
-    Then create a new function file in `/functions` called `todos-create.js`
+    Then create a new function file in `/functions` called `contacts-create.js`
 
     ```js
-    /* code from functions/todos-create.js */
+    /* code from functions/contacts-create.js */
     import faunadb from 'faunadb' /* Import faunaDB sdk */
 
     /* configure faunaDB Client with our secret */
@@ -371,12 +371,12 @@ Let's rock and roll.
     exports.handler = (event, context, callback) => {
       /* parse the string body into a useable JS object */
       const data = JSON.parse(event.body)
-      console.log("Function `todo-create` invoked", data)
-      const todoItem = {
+      console.log("Function `contact-create` invoked", data)
+      const contactItem = {
         data: data
       }
       /* construct the fauna query */
-      return client.query(q.Create(q.Ref("classes/todos"), todoItem))
+      return client.query(q.Create(q.Ref("classes/contacts"), contactItem))
       .then((response) => {
         console.log("success", response)
         /* Success! return the response with statusCode 200 */
@@ -397,12 +397,12 @@ Let's rock and roll.
 
 ### 4. Connect the function to the frontend app
 
-Inside of the React app, we can now wire up the `/.netlify/functions/todos-create` endpoint to an AJAX request.
+Inside of the React app, we can now wire up the `/.netlify/functions/contacts-create` endpoint to an AJAX request.
 
 ```js
 // Function using fetch to POST to our API endpoint
-function createTodo(data) {
-  return fetch('/.netlify/functions/todos-create', {
+function createcontact(data) {
+  return fetch('/.netlify/functions/contacts-create', {
     body: JSON.stringify(data),
     method: 'POST'
   }).then(response => {
@@ -410,14 +410,14 @@ function createTodo(data) {
   })
 }
 
-// Todo data
-const myTodo = {
-  title: 'My todo title',
+// contact data
+const mycontact = {
+  title: 'My contact title',
   completed: false,
 }
 
 // create it!
-createTodo(myTodo).then((response) => {
+createcontact(mycontact).then((response) => {
   console.log('API response', response)
   // set app state
 }).catch((error) => {
@@ -433,14 +433,14 @@ All the demo React frontend code is [available here.](https://github.com/netlify
 
 ### 5. Finishing the backend Functions
 
-So far we have created our `todo-create` function and we've seen how we make requests to our live function endpoints. It's now time to add the rest of our CRUD functions to manage our todos.
+So far we have created our `contact-create` function and we've seen how we make requests to our live function endpoints. It's now time to add the rest of our CRUD functions to manage our contacts.
 
-1. **Read Todos by ID**
+1. **Read contacts by ID**
 
-    Then create a new function file in `/functions` called `todos-read.js`
+    Then create a new function file in `/functions` called `contacts-read.js`
 
     ```js
-    /* code from functions/todos-read.js */
+    /* code from functions/contacts-read.js */
     import faunadb from 'faunadb'
     import getId from './utils/getId'
 
@@ -451,8 +451,8 @@ So far we have created our `todo-create` function and we've seen how we make req
 
     exports.handler = (event, context, callback) => {
       const id = getId(event.path)
-      console.log(`Function 'todo-read' invoked. Read id: ${id}`)
-      return client.query(q.Get(q.Ref(`classes/todos/${id}`)))
+      console.log(`Function 'contact-read' invoked. Read id: ${id}`)
+      return client.query(q.Get(q.Ref(`classes/contacts/${id}`)))
       .then((response) => {
         console.log("success", response)
         return callback(null, {
@@ -469,12 +469,12 @@ So far we have created our `todo-create` function and we've seen how we make req
     }
     ```
 
-2. **Read All Todos**
+2. **Read All contacts**
 
-    Then create a new function file in `/functions` called `todos-read-all.js`
+    Then create a new function file in `/functions` called `contacts-read-all.js`
 
     ```js
-    /* code from functions/todos-read-all.js */
+    /* code from functions/contacts-read-all.js */
     import faunadb from 'faunadb'
 
     const q = faunadb.query
@@ -483,18 +483,18 @@ So far we have created our `todo-create` function and we've seen how we make req
     })
 
     exports.handler = (event, context, callback) => {
-      console.log("Function `todo-read-all` invoked")
-      return client.query(q.Paginate(q.Match(q.Ref("indexes/all_todos"))))
+      console.log("Function `contact-read-all` invoked")
+      return client.query(q.Paginate(q.Match(q.Ref("indexes/all_contacts"))))
       .then((response) => {
-        const todoRefs = response.data
-        console.log("Todo refs", todoRefs)
-        console.log(`${todoRefs.length} todos found`)
-        // create new query out of todo refs. http://bit.ly/2LG3MLg
-        const getAllTodoDataQuery = todoRefs.map((ref) => {
+        const contactRefs = response.data
+        console.log("contact refs", contactRefs)
+        console.log(`${contactRefs.length} contacts found`)
+        // create new query out of contact refs. http://bit.ly/2LG3MLg
+        const getAllcontactDataQuery = contactRefs.map((ref) => {
           return q.Get(ref)
         })
         // then query the refs
-        return client.query(getAllTodoDataQuery).then((ret) => {
+        return client.query(getAllcontactDataQuery).then((ret) => {
           return callback(null, {
             statusCode: 200,
             body: JSON.stringify(ret)
@@ -510,12 +510,12 @@ So far we have created our `todo-create` function and we've seen how we make req
     }
     ```
 
-3. **Update todo by ID**
+3. **Update contact by ID**
 
-    Then create a new function file in `/functions` called `todos-update.js`
+    Then create a new function file in `/functions` called `contacts-update.js`
 
     ```js
-    /* code from functions/todos-update.js */
+    /* code from functions/contacts-update.js */
     import faunadb from 'faunadb'
     import getId from './utils/getId'
 
@@ -527,8 +527,8 @@ So far we have created our `todo-create` function and we've seen how we make req
     exports.handler = (event, context, callback) => {
       const data = JSON.parse(event.body)
       const id = getId(event.path)
-      console.log(`Function 'todo-update' invoked. update id: ${id}`)
-      return client.query(q.Update(q.Ref(`classes/todos/${id}`), {data}))
+      console.log(`Function 'contact-update' invoked. update id: ${id}`)
+      return client.query(q.Update(q.Ref(`classes/contacts/${id}`), {data}))
       .then((response) => {
         console.log("success", response)
         return callback(null, {
@@ -548,10 +548,10 @@ So far we have created our `todo-create` function and we've seen how we make req
 
 4. **Delete by ID**
 
-    Then create a new function file in `/functions` called `todos-delete.js`
+    Then create a new function file in `/functions` called `contacts-delete.js`
 
     ```js
-    /* code from functions/todos-delete.js */
+    /* code from functions/contacts-delete.js */
     import faunadb from 'faunadb'
     import getId from './utils/getId'
 
@@ -562,8 +562,8 @@ So far we have created our `todo-create` function and we've seen how we make req
 
     exports.handler = (event, context, callback) => {
       const id = getId(event.path)
-      console.log(`Function 'todo-delete' invoked. delete id: ${id}`)
-      return client.query(q.Delete(q.Ref(`classes/todos/${id}`)))
+      console.log(`Function 'contact-delete' invoked. delete id: ${id}`)
+      return client.query(q.Delete(q.Ref(`classes/contacts/${id}`)))
       .then((response) => {
         console.log("success", response)
         return callback(null, {
@@ -581,12 +581,12 @@ So far we have created our `todo-create` function and we've seen how we make req
     ```
 
 
-4. **Delete batch todos**
+4. **Delete batch contacts**
 
-    Then create a new function file in `/functions` called `todos-delete-batch.js`
+    Then create a new function file in `/functions` called `contacts-delete-batch.js`
 
     ```js
-    /* code from functions/todos-delete-batch.js */
+    /* code from functions/contacts-delete-batch.js */
     import faunadb from 'faunadb'
     import getId from './utils/getId'
 
@@ -598,13 +598,13 @@ So far we have created our `todo-create` function and we've seen how we make req
     exports.handler = (event, context, callback) => {
       const data = JSON.parse(event.body)
       console.log('data', data)
-      console.log("Function `todo-delete-batch` invoked", data.ids)
+      console.log("Function `contact-delete-batch` invoked", data.ids)
       // construct batch query from IDs
-      const deleteAllCompletedTodoQuery = data.ids.map((id) => {
-        return q.Delete(q.Ref(`classes/todos/${id}`))
+      const deleteAllCompletedcontactQuery = data.ids.map((id) => {
+        return q.Delete(q.Ref(`classes/contacts/${id}`))
       })
       // Hit fauna with the query to delete the completed items
-      return client.query(deleteAllCompletedTodoQuery)
+      return client.query(deleteAllCompletedcontactQuery)
       .then((response) => {
         console.log("success", response)
         return callback(null, {
@@ -628,7 +628,7 @@ After we deploy all these functions, we will be able to call them from our front
 /* Api methods to call /functions */
 
 const create = (data) => {
-  return fetch('/.netlify/functions/todos-create', {
+  return fetch('/.netlify/functions/contacts-create', {
     body: JSON.stringify(data),
     method: 'POST'
   }).then(response => {
@@ -637,13 +637,13 @@ const create = (data) => {
 }
 
 const readAll = () => {
-  return fetch('/.netlify/functions/todos-read-all').then((response) => {
+  return fetch('/.netlify/functions/contacts-read-all').then((response) => {
     return response.json()
   })
 }
 
-const update = (todoId, data) => {
-  return fetch(`/.netlify/functions/todos-update/${todoId}`, {
+const update = (contactId, data) => {
+  return fetch(`/.netlify/functions/contacts-update/${contactId}`, {
     body: JSON.stringify(data),
     method: 'POST'
   }).then(response => {
@@ -651,18 +651,18 @@ const update = (todoId, data) => {
   })
 }
 
-const deleteTodo = (todoId) => {
-  return fetch(`/.netlify/functions/todos-delete/${todoId}`, {
+const deletecontact = (contactId) => {
+  return fetch(`/.netlify/functions/contacts-delete/${contactId}`, {
     method: 'POST',
   }).then(response => {
     return response.json()
   })
 }
 
-const batchDeleteTodo = (todoIds) => {
-  return fetch(`/.netlify/functions/todos-delete-batch`, {
+const batchDeletecontact = (contactIds) => {
+  return fetch(`/.netlify/functions/contacts-delete-batch`, {
     body: JSON.stringify({
-      ids: todoIds
+      ids: contactIds
     }),
     method: 'POST'
   }).then(response => {
@@ -674,8 +674,8 @@ export default {
   create: create,
   readAll: readAll,
   update: update,
-  delete: deleteTodo,
-  batchDelete: batchDeleteTodo
+  delete: deletecontact,
+  batchDelete: batchDeletecontact
 }
 ```
 
@@ -691,7 +691,7 @@ The sky is the limit on what you can build with the JAMstack and we'd love to he
 
 This example can be improved with users/authentication. Next steps to build out the app would be:
 
-- Add in the concept of users for everyone to have their own todo list
+- Add in the concept of users for everyone to have their own contact list
 - Wire up authentication using the JSON web token-based [Netlify Identity](https://identity.netlify.com/)
-- Add in due dates to todos and wire up Functions to notify users via email/SMS
+- Add in due dates to contacts and wire up Functions to notify users via email/SMS
 - File for IPO?

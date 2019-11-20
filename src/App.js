@@ -10,13 +10,13 @@ import './App.css'
 
 export default class App extends Component {
   state = {
-    todos: [],
+    contacts: [],
     showMenu: false
   }
   componentDidMount() {
-    // Fetch all todos
-    api.readAll().then((todos) => {
-      if (todos.message === 'unauthorized') {
+    // Fetch all contacts
+    api.readAll().then((contacts) => {
+      if (contacts.message === 'unauthorized') {
         if (isLocalHost()) {
           alert('FaunaDB key is not unauthorized. Make sure you set it in terminal session where you ran `npm start`. Visit http://bit.ly/set-fauna-key for more info')
         } else {
@@ -25,19 +25,19 @@ export default class App extends Component {
         return false
       }
 
-      console.log('all todos', todos)
+      console.log('all contacts', contacts)
       this.setState({
-        todos: todos
+        contacts: contacts
       })
     })
   }
-  saveTodo = (e) => {
+  saveContact = (e) => {
     e.preventDefault()
-    const { todos } = this.state
-    const todoValue = this.inputElement.value
+    const { contacts } = this.state
+    const contactValue = this.inputElement.value
 
-    if (!todoValue) {
-      alert('Please add Todo title')
+    if (!contactValue) {
+      alert('Please add contact title')
       this.inputElement.focus()
       return false
     }
@@ -45,123 +45,123 @@ export default class App extends Component {
     // reset input to empty
     this.inputElement.value = ''
 
-    const todoInfo = {
-      title: todoValue,
+    const contactInfo = {
+      title: contactValue,
       completed: false,
     }
-    // Optimistically add todo to UI
-    const newTodoArray = [{
-      data: todoInfo,
+    // Optimistically add contact to UI
+    const newContactArray = [{
+      data: contactInfo,
       ts: new Date().getTime() * 10000
     }]
 
-    const optimisticTodoState = newTodoArray.concat(todos)
+    const optimisticContactState = newcontactArray.concat(contacts)
 
     this.setState({
-      todos: optimisticTodoState
+      contacts: optimisticContactState
     })
-    // Make API request to create new todo
-    api.create(todoInfo).then((response) => {
+    // Make API request to create new contact
+    api.create(contactInfo).then((response) => {
       console.log(response)
       // remove temporaryValue from state and persist API response
-      const persistedState = removeOptimisticTodo(todos).concat(response)
+      const persistedState = removeOptimisticContact(contacts).concat(response)
       // Set persisted value to state
       this.setState({
-        todos: persistedState
+        contacts: persistedState
       })
     }).catch((e) => {
       console.log('An API error occurred', e)
-      const revertedState = removeOptimisticTodo(todos)
+      const revertedState = removeOptimisticContact(contacts)
       // Reset to original state
       this.setState({
-        todos: revertedState
+        contacts: revertedState
       })
     })
   }
-  deleteTodo = (e) => {
-    const { todos } = this.state
-    const todoId = e.target.dataset.id
+  deleteContact = (e) => {
+    const { contacts } = this.state
+    const contactId = e.target.dataset.id
 
-    // Optimistically remove todo from UI
-    const filteredTodos = todos.reduce((acc, current) => {
-      const currentId = getTodoId(current)
-      if (currentId === todoId) {
+    // Optimistically remove contact from UI
+    const filteredContacts = contacts.reduce((acc, current) => {
+      const currentId = getContactId(current)
+      if (currentId === contactId) {
         // save item being removed for rollback
-        acc.rollbackTodo = current
+        acc.rollbackContact = current
         return acc
       }
-      // filter deleted todo out of the todos list
+      // filter deleted contact out of the contacts list
       acc.optimisticState = acc.optimisticState.concat(current)
       return acc
     }, {
-      rollbackTodo: {},
+      rollbackContact: {},
       optimisticState: []
     })
 
     this.setState({
-      todos: filteredTodos.optimisticState
+      contacts: filteredContacts.optimisticState
     })
 
-    // Make API request to delete todo
-    api.delete(todoId).then(() => {
-      console.log(`deleted todo id ${todoId}`)
+    // Make API request to delete contact
+    api.delete(contactId).then(() => {
+      console.log(`deleted contact id ${contactId}`)
     }).catch((e) => {
-      console.log(`There was an error removing ${todoId}`, e)
+      console.log(`There was an error removing ${contactId}`, e)
       // Add item removed back to list
       this.setState({
-        todos: filteredTodos.optimisticState.concat(filteredTodos.rollbackTodo)
+        contacts: filteredContacts.optimisticState.concat(filteredContacts.rollbackContact)
       })
     })
   }
-  handleTodoCheckbox = (event) => {
-    const { todos } = this.state
+  handleContactCheckbox = (event) => {
+    const { contacts } = this.state
     const { target } = event
-    const todoCompleted = target.checked
-    const todoId = target.dataset.id
+    const contactCompleted = target.checked
+    const contactId = target.dataset.id
 
-    const updatedTodos = todos.map((todo, i) => {
-      const { data } = todo
-      const id = getTodoId(todo)
-      if (id === todoId && data.completed !== todoCompleted) {
-        data.completed = todoCompleted
+    const updatedContacts = contacts.map((contact, i) => {
+      const { data } = contact
+      const id = getContactId(contact)
+      if (id === contactId && data.completed !== contactCompleted) {
+        data.completed = contactCompleted
       }
-      return todo
+      return contact
     })
 
     this.setState({
-      todos: updatedTodos
+      contacts: updatedContacts
     }, () => {
-      api.update(todoId, {
-        completed: todoCompleted
+      api.update(contactId, {
+        completed: contactCompleted
       }).then(() => {
-        console.log(`update todo ${todoId}`, todoCompleted)
+        console.log(`update contact ${contactId}`, contactCompleted)
       }).catch((e) => {
         console.log('An API error occurred', e)
       })
     })
   }
-  updateTodoTitle = (event, currentValue) => {
+  updateContactTitle = (event, currentValue) => {
     let isDifferent = false
-    const todoId = event.target.dataset.key
+    const contactId = event.target.dataset.key
 
-    const updatedTodos = this.state.todos.map((todo, i) => {
-      const id = getTodoId(todo)
-      if (id === todoId && todo.data.title !== currentValue) {
-        todo.data.title = currentValue
+    const updatedContacts = this.state.contacts.map((contact, i) => {
+      const id = getContactId(contact)
+      if (id === contactId && contact.data.title !== currentValue) {
+        contact.data.title = currentValue
         isDifferent = true
       }
-      return todo
+      return contact
     })
 
     // only set state if input different
     if (isDifferent) {
       this.setState({
-        todos: updatedTodos
+        contacts: updatedContacts
       }, () => {
-        api.update(todoId, {
+        api.update(contactId, {
           title: currentValue
         }).then(() => {
-          console.log(`update todo ${todoId}`, currentValue)
+          console.log(`update contact ${contactId}`, currentValue)
         }).catch((e) => {
           console.log('An API error occurred', e)
         })
@@ -169,39 +169,39 @@ export default class App extends Component {
     }
   }
   clearCompleted = () => {
-    const { todos } = this.state
+    const { contacts } = this.state
 
-    // Optimistically remove todos from UI
-    const data = todos.reduce((acc, current) => {
+    // Optimistically remove contacts from UI
+    const data = contacts.reduce((acc, current) => {
       if (current.data.completed) {
         // save item being removed for rollback
-        acc.completedTodoIds = acc.completedTodoIds.concat(getTodoId(current))
+        acc.completedContactIds = acc.completedContactIds.concat(getContactId(current))
         return acc
       }
-      // filter deleted todo out of the todos list
+      // filter deleted contact out of the contacts list
       acc.optimisticState = acc.optimisticState.concat(current)
       return acc
     }, {
-      completedTodoIds: [],
+      completedContactIds: [],
       optimisticState: []
     })
 
-    // only set state if completed todos exist
-    if (!data.completedTodoIds.length) {
-      alert('Please check off some todos to batch remove them')
+    // only set state if completed contacts exist
+    if (!data.completedContactIds.length) {
+      alert('Please check off some contacts to batch remove them')
       this.closeModal()
       return false
     }
 
     this.setState({
-      todos: data.optimisticState
+      contacts: data.optimisticState
     }, () => {
       setTimeout(() => {
         this.closeModal()
       }, 600)
 
-      api.batchDelete(data.completedTodoIds).then(() => {
-        console.log(`Batch removal complete`, data.completedTodoIds)
+      api.batchDelete(data.completedContactIds).then(() => {
+        console.log(`Batch removal complete`, data.completedContactIds)
       }).catch((e) => {
         console.log('An API error occurred', e)
       })
@@ -217,10 +217,10 @@ export default class App extends Component {
       showMenu: true
     })
   }
-  renderTodos() {
-    const { todos } = this.state
+  renderContacts() {
+    const { contacts } = this.state
 
-    if (!todos || !todos.length) {
+    if (!contacts || !contacts.length) {
       // Loading State here
       return null
     }
@@ -228,40 +228,36 @@ export default class App extends Component {
     const timeStampKey = 'ts'
     const orderBy = 'desc' // or `asc`
     const sortOrder = sortByDate(timeStampKey, orderBy)
-    const todosByDate = todos.sort(sortOrder)
+    const contactsByDate = contacts.sort(sortOrder)
 
-    return todosByDate.map((todo, i) => {
-      const { data, ref } = todo
-      const id = getTodoId(todo)
+    return contactsByDate.map((contact, i) => {
+      const { data, ref } = contact
+      const id = getContactId(contact)
       // only show delete button after create API response returns
       let deleteButton
       if (ref) {
-        deleteButton = (
-          <button data-id={id} onClick={this.deleteTodo}>
-            delete
-          </button>
-        )
+        deleteButton = (<button data-id={id} onClick={this.deleteContact}>delete</button>)
       }
-      const boxIcon = (data.completed) ? '#todo__box__done' : '#todo__box'
+      const boxIcon = (data.completed) ? '#contact__box__done' : '#contact__box'
       return (
-        <div key={i} className='todo-item'>
-          <label className="todo">
+        <div key={i} className='contact-item'>
+          <label className="contact">
             <input
               data-id={id}
-              className="todo__state"
+              className="contact__state"
               type="checkbox"
-              onChange={this.handleTodoCheckbox}
+              onChange={this.handleContactCheckbox}
               checked={data.completed}
             />
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 25" className="todo__icon">
-              <use xlinkHref={`${boxIcon}`} className="todo__box"></use>
-              <use xlinkHref="#todo__check" className="todo__check"></use>
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 25" className="contact__icon">
+              <use xlinkHref={`${boxIcon}`} className="contact__box"></use>
+              <use xlinkHref="#contact__check" className="contact__check"></use>
             </svg>
-            <div className='todo-list-title'>
+            <div className='contact-list-title'>
               <ContentEditable
                 tagName='span'
                 editKey={id}
-                onBlur={this.updateTodoTitle} // save on enter/blur
+                onBlur={this.updateContactTitle} // save on enter/blur
                 html={data.title}
                 // onChange={this.handleDataChange} // save on change
               />
@@ -278,29 +274,27 @@ export default class App extends Component {
 
         <AppHeader />
 
-        <div className='todo-list'>
+        <div className='contact-list'>
           <h2>
-            Create todo
+            Create contact
             <SettingsIcon onClick={this.openModal} className='mobile-toggle' />
           </h2>
-          <form className='todo-create-wrapper' onSubmit={this.saveTodo}>
+          <form className='contact-create-wrapper' onSubmit={this.saveContact}>
             <input
-              className='todo-create-input'
-              placeholder='Add a todo item'
+              className='contact-create-input'
+              placeholder='Add a contact'
               name='name'
               ref={el => this.inputElement = el}
               autoComplete='off'
               style={{marginRight: 20}}
             />
-            <div className='todo-actions'>
-              <button className='todo-create-button'>
-                Create todo
-              </button>
+            <div className='contact-actions'>
+              <button className='contact-create-button'>Create contact</button>
               <SettingsIcon onClick={this.openModal}  className='desktop-toggle' />
             </div>
           </form>
 
-          {this.renderTodos()}
+          {this.rendercontacts()}
         </div>
         <SettingsMenu
           showMenu={this.state.showMenu}
@@ -312,16 +306,16 @@ export default class App extends Component {
   }
 }
 
-function removeOptimisticTodo(todos) {
-  // return all 'real' todos
-  return todos.filter((todo) => {
-    return todo.ref
+function removeOptimisticContact(contacts) {
+  // return all 'real' contacts
+  return contacts.filter((contact) => {
+    return contact.ref
   })
 }
 
-function getTodoId(todo) {
-  if (!todo.ref) {
+function getContactId(contact) {
+  if (!contact.ref) {
     return null
   }
-  return todo.ref['@ref'].id
+  return contact.ref['@ref'].id
 }
