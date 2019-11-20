@@ -55,7 +55,7 @@ export default class App extends Component {
       ts: new Date().getTime() * 10000
     }]
 
-    const optimisticContactState = newcontactArray.concat(contacts)
+    const optimisticContactState = newContactArray.concat(contacts)
 
     this.setState({
       contacts: optimisticContactState
@@ -294,7 +294,7 @@ export default class App extends Component {
             </div>
           </form>
 
-          {this.rendercontacts()}
+          {this.renderContacts()}
         </div>
         <SettingsMenu
           showMenu={this.state.showMenu}
