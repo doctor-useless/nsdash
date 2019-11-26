@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import logo from '../../assets/logo.svg'
 import './AppHeader.css'
 
@@ -12,6 +13,10 @@ const AppHeader = (props) => {
             <div className='app-title-text'>
               <h1 className='app-title'>NS Dashboard</h1>
               <p className='app-intro'>Manage enquiries, shared albums and more.</p>
+            </div>
+            <div className='app-routes'>
+              <Link to='/'>Home</Link>
+              <Link to='/contacts'>Contacts</Link>
             </div>
           </div>
         </div>
