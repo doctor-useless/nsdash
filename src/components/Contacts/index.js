@@ -17,9 +17,9 @@ export default class Contacts extends Component {
         api.readAll().then((contacts) => {
             if (contacts.message === 'unauthorized') {
                 if (isLocalHost()) {
-                    alert('FaunaDB key is not unauthorized. Make sure you set it in terminal session where you ran `npm start`. Visit http://bit.ly/set-fauna-key for more info')
+                    console.error('FaunaDB key is not unauthorized. Make sure you set it in terminal session where you ran `npm start`. Visit http://bit.ly/set-fauna-key for more info')
                 } else {
-                    alert('FaunaDB key is not unauthorized. Verify the key `FAUNADB_SERVER_SECRET` set in Netlify enviroment variables is correct')
+                    console.error('FaunaDB key is not unauthorized. Verify the key `FAUNADB_SERVER_SECRET` set in Netlify enviroment variables is correct')
                 }
                 return false
             }
@@ -34,7 +34,6 @@ export default class Contacts extends Component {
         const contactValue = this.inputElement.value
 
         if (!contactValue) {
-            alert('Please add contact title')
             this.inputElement.focus()
             return false
         }
@@ -43,7 +42,7 @@ export default class Contacts extends Component {
         this.inputElement.value = ''
 
         const contactInfo = {
-            title: contactValue,
+            name: contactValue,
             completed: false,
         }
         // Optimistically add contact to UI
@@ -136,14 +135,14 @@ export default class Contacts extends Component {
             })
         })
     }
-    updateContactTitle = (event, currentValue) => {
+    updateContactName = (event, currentValue) => {
         let isDifferent = false
         const contactId = event.target.dataset.key
 
         const updatedContacts = this.state.contacts.map((contact, i) => {
             const id = getContactId(contact)
-            if (id === contactId && contact.data.title !== currentValue) {
-                contact.data.title = currentValue
+            if (id === contactId && contact.data.name !== currentValue) {
+                contact.data.name = currentValue
                 isDifferent = true
             }
             return contact
@@ -155,7 +154,7 @@ export default class Contacts extends Component {
                 contacts: updatedContacts
             }, () => {
                 api.update(contactId, {
-                    title: currentValue
+                    name: currentValue
                 }).then(() => {
                     console.log(`update contact ${contactId}`, currentValue)
                 }).catch((e) => {
@@ -249,12 +248,12 @@ export default class Contacts extends Component {
                             <use xlinkHref={`${boxIcon}`} className="contact__box"></use>
                             <use xlinkHref="#contact__check" className="contact__check"></use>
                         </svg>
-                        <div className='contact-list-title'>
+                        <div className='contact-list-name'>
                             <ContentEditable
                                 tagName='span'
                                 editKey={id}
-                                onBlur={this.updateContactTitle} // save on enter/blur
-                                html={data.title}
+                                onBlur={this.updateContactName} // save on enter/blur
+                                html={data.name}
                             // onChange={this.handleDataChange} // save on change
                             />
                         </div>

@@ -40,7 +40,7 @@
 	justify-content: space-between;
 	min-height: 43px;
 }
-.contact-list-title {
+.contact-list-name {
 	font-size: 17px;
 	font-weight: 500;
 	color: #5a5a5a;
@@ -50,7 +50,7 @@
 	margin-left: 45px;
 	width: 470px;
 }
-.contact-list-title:hover span[contenteditable="false"]:before {
+.contact-list-name:hover span[contenteditable="false"]:before {
 	content: "click to edit";
 	position: absolute;
 	top: -6px;
@@ -87,7 +87,7 @@
 		margin-bottom: 15px;
 		max-width: 95%;
 	}
-	.contact-list-title {
+	.contact-list-name {
 		/* Disable Auto Zoom in Input “Text” tag - Safari on iPhone */
 		font-size: 16px;
 		max-width: 80%;
@@ -115,10 +115,10 @@
 		align-items: center;
 		justify-content: center;
 	}
-	.contact-list-title:hover span[contenteditable="false"]:before {
+	.contact-list-name:hover span[contenteditable="false"]:before {
 		content: "";
 	}
-	.contact-list-title:hover span[contenteditable="true"]:before {
+	.contact-list-name:hover span[contenteditable="true"]:before {
 		content: "click to edit";
 		position: absolute;
 		top: -20px;
@@ -164,7 +164,7 @@
 	z-index: 1;
 }
 
-.contact__state:checked ~ .contact-list-title {
+.contact__state:checked ~ .contact-list-name {
 	text-decoration: line-through;
 }
 
