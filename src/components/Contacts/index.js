@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import './Contacts.css'
 import ContentEditable from '../ContentEditable'
 import SettingsMenu from '../SettingsMenu'
 import SettingsIcon from '../SettingsIcon'
@@ -22,8 +23,6 @@ export default class Contacts extends Component {
                 }
                 return false
             }
-
-            console.log('all contacts', contacts)
             this.setState({
                 contacts: contacts
             })
@@ -60,7 +59,6 @@ export default class Contacts extends Component {
         })
         // Make API request to create new contact
         api.create(contactInfo).then((response) => {
-            console.log(response)
             // remove temporaryValue from state and persist API response
             const persistedState = removeOptimisticContact(contacts).concat(response)
             // Set persisted value to state
