@@ -28,6 +28,19 @@
 .app-intro {
   font-size: large;
 }
+.app-routes {
+  display: flex;
+}
+.app-routes > a {
+  display: inline-block;
+  padding: 10px;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px; 
+}
+.app-routes > a:hover {
+  background-color: #333;
+}
 
 @keyframes App-logo-spin {
   from { transform: rotate(0deg); }

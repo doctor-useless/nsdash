@@ -9,8 +9,8 @@ export default class App extends Component {
   render() {
     return (
       <div className='app'>
-        <AppHeader />
         <BrowserRouter>
+          <AppHeader />
           <Switch>
             <Route exact path='/' render={() => <Home />} />
             <Route exact path='/contacts' render={() => <Contacts />} />
