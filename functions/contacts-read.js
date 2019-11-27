@@ -8,7 +8,6 @@ const client = new faunadb.Client({
 
 exports.handler = async (event, context) => {
   const id = getId(event.path);
-  console.log(`Function 'contact-read' invoked. Read id: ${id}`);
   return client.query(q.Get(q.Ref(`classes/contacts/${id}`)))
     .then((response) => {
       console.log('success', response);

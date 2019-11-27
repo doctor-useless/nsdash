@@ -11,7 +11,6 @@ const client = new faunadb.Client({
 exports.handler = async (event, context) => {
   /* parse the string body into a useable JS object */
   const data = JSON.parse(event.body)
-  console.log('Function `contact-create` invoked', data)
   const contactItem = {
     data: data
   }

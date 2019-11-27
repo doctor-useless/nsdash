@@ -371,7 +371,6 @@ Let's rock and roll.
     exports.handler = (event, context, callback) => {
       /* parse the string body into a useable JS object */
       const data = JSON.parse(event.body)
-      console.log("Function `contact-create` invoked", data)
       const contactItem = {
         data: data
       }
@@ -451,7 +450,6 @@ So far we have created our `contact-create` function and we've seen how we make 
 
     exports.handler = (event, context, callback) => {
       const id = getId(event.path)
-      console.log(`Function 'contact-read' invoked. Read id: ${id}`)
       return client.query(q.Get(q.Ref(`classes/contacts/${id}`)))
       .then((response) => {
         console.log("success", response)
@@ -483,7 +481,6 @@ So far we have created our `contact-create` function and we've seen how we make 
     })
 
     exports.handler = (event, context, callback) => {
-      console.log("Function `contact-read-all` invoked")
       return client.query(q.Paginate(q.Match(q.Ref("indexes/all_contacts"))))
       .then((response) => {
         const contactRefs = response.data
@@ -527,7 +524,6 @@ So far we have created our `contact-create` function and we've seen how we make 
     exports.handler = (event, context, callback) => {
       const data = JSON.parse(event.body)
       const id = getId(event.path)
-      console.log(`Function 'contact-update' invoked. update id: ${id}`)
       return client.query(q.Update(q.Ref(`classes/contacts/${id}`), {data}))
       .then((response) => {
         console.log("success", response)
@@ -562,7 +558,6 @@ So far we have created our `contact-create` function and we've seen how we make 
 
     exports.handler = (event, context, callback) => {
       const id = getId(event.path)
-      console.log(`Function 'contact-delete' invoked. delete id: ${id}`)
       return client.query(q.Delete(q.Ref(`classes/contacts/${id}`)))
       .then((response) => {
         console.log("success", response)
@@ -597,8 +592,6 @@ So far we have created our `contact-create` function and we've seen how we make 
 
     exports.handler = (event, context, callback) => {
       const data = JSON.parse(event.body)
-      console.log('data', data)
-      console.log("Function `contact-delete-batch` invoked", data.ids)
       // construct batch query from IDs
       const deleteAllCompletedcontactQuery = data.ids.map((id) => {
         return q.Delete(q.Ref(`classes/contacts/${id}`))

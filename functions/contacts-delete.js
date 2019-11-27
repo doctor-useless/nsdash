@@ -8,7 +8,6 @@ const client = new faunadb.Client({
 
 exports.handler = async (event, context) => {
   const id = getId(event.path);
-  console.log(`Function 'contact-delete' invoked. delete id: ${id}`);
   return client.query(q.Delete(q.Ref(`classes/contacts/${id}`)))
     .then((response) => {
       console.log('success', response);

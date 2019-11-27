@@ -133,7 +133,7 @@ export default class Contacts extends Component {
 
         // only set state if input different
         if (isDifferent)
-            updateState(this, updatedContacts, contactId, {name:currentValue}, currentValue);
+            updateState(this, updatedContacts, contactId, { name: currentValue }, currentValue);
     }
     updateContactEmail = (event, currentValue) => {
         let isDifferent = false
@@ -150,7 +150,7 @@ export default class Contacts extends Component {
 
         // only set state if input different
         if (isDifferent)
-            updateState(this, updatedContacts, contactId, {email:currentValue}, currentValue);
+            updateState(this, updatedContacts, contactId, { email: currentValue }, currentValue);
     }
     updateContactPhone = (event, currentValue) => {
         let isDifferent = false
@@ -167,7 +167,7 @@ export default class Contacts extends Component {
 
         // only set state if input different
         if (isDifferent)
-            updateState(this, updatedContacts, contactId, {phone:currentValue}, currentValue);
+            updateState(this, updatedContacts, contactId, { phone: currentValue }, currentValue);
     }
     updateContactNote = (event, currentValue) => {
         let isDifferent = false
@@ -184,7 +184,7 @@ export default class Contacts extends Component {
 
         // only set state if input different
         if (isDifferent)
-            updateState(this, updatedContacts, contactId, {note:currentValue}, currentValue);
+            updateState(this, updatedContacts, contactId, { note: currentValue }, currentValue);
     }
     closeModal = (e) => {
         this.setState({
@@ -216,40 +216,30 @@ export default class Contacts extends Component {
             }
             return (
                 <div key={i} className='contact-item'>
-                    <label className="contact">
-                        <div className='contact-list-name'>
-                            <ContentEditable
-                                tagName='span'
-                                editKey={id}
-                                onBlur={this.updateContactName}
-                                html={data.name}
-                            />
-                        </div>
-                        <div className='contact-list-email'>
-                            <ContentEditable
-                                tagName='span'
-                                editKey={id}
-                                onBlur={this.updateContactEmail}
-                                html={data.email}
-                            />
-                        </div>
-                        <div className='contact-list-phone'>
-                            <ContentEditable
-                                tagName='span'
-                                editKey={id}
-                                onBlur={this.updateContactPhone}
-                                html={data.phone}
-                            />
-                        </div>
-                        <div className='contact-list-note'>
-                            <ContentEditable
-                                tagName='span'
-                                editKey={id}
-                                onBlur={this.updateContactNote}
-                                html={data.note}
-                            />
-                        </div>
-                    </label>
+                    <ContentEditable
+                        tagName='div'
+                        editKey={id}
+                        onBlur={this.updateContactName}
+                        html={data.name}
+                    />
+                    <ContentEditable
+                        tagName='div'
+                        editKey={id}
+                        onBlur={this.updateContactEmail}
+                        html={data.email}
+                    />
+                    <ContentEditable
+                        tagName='div'
+                        editKey={id}
+                        onBlur={this.updateContactPhone}
+                        html={data.phone}
+                    />
+                    <ContentEditable
+                        tagName='div'
+                        editKey={id}
+                        onBlur={this.updateContactNote}
+                        html={data.note}
+                    />
                     {deleteButton}
                 </div>
             )
@@ -258,10 +248,7 @@ export default class Contacts extends Component {
     render() {
         return (
             <div className='contact-list'>
-                <h2>
-                    Create contact
-                    <SettingsIcon onClick={this.openModal} className='mobile-toggle' />
-                </h2>
+                <h2>Create contact</h2>
                 <form className='contact-create-wrapper' onSubmit={this.saveContact}>
                     <input
                         className='contact-create-input'

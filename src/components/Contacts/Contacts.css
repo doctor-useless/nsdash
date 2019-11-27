@@ -1,6 +1,3 @@
-.contact-list {
-	/*width: 600px;*/
-}
 .contact-settings-toggle {
 	fill: #b7b9bd;
 	width: 25px;
@@ -40,62 +37,28 @@
 .contact-item {
 	padding: 15px 0;
 	display: flex;
-	align-items: center;
+	align-items: flex-start;
 	justify-content: space-between;
 	min-height: 43px;
 }
-.contact-list-name {
+.contact-item > div:first-of-type {
 	font-size: 17px;
 	font-weight: 500;
-	color: #5a5a5a;
-	flex-grow: 1;
 	position: relative;
-	z-index: 2;
-	margin-left: 45px;
-	width: 470px;
 }
-.contact-list-name:hover span[contenteditable="false"]:before {
-	content: "click to edit";
-	position: absolute;
-	top: -6px;
-	left: 11px;
-	font-size: 11px;
-	font-weight: 300;
-	color: #adadad;
-	letter-spacing: 1px;
+.contact-item > button {
+	margin: 0 0 0 5px;
 }
-.mobile-toggle {
-	display: none;
-}
+
 .desktop-toggle {
 	margin-left: 10px;
 	margin-bottom: 3px;
 }
 
 @media (max-width: 768px) {
-	.mobile-toggle {
-		display: inline-flex;
-	}
-	.desktop-toggle {
-		display: none;
-	}
 	.contact-list {
 		padding: 15px;
 		padding-top: 10px;
-		width: auto;
-	}
-	.contact-list h2 {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		margin-bottom: 15px;
-		max-width: 95%;
-	}
-	.contact-list-name {
-		/* Disable Auto Zoom in Input “Text” tag - Safari on iPhone */
-		font-size: 16px;
-		max-width: 80%;
-		margin-left: 40px;
 	}
 	.contact-create-wrapper {
 		flex-direction: column;
@@ -108,7 +71,7 @@
 		/* Disable Auto Zoom in Input “Text” tag - Safari on iPhone */
 		font-size: 16px;
 		margin-bottom: 15px;
-		min-width: 85%;
+		width: calc(100vw - 60px);
 	}
 	.contact-item button {
 		padding: 4px 12px;
@@ -119,80 +82,4 @@
 		align-items: center;
 		justify-content: center;
 	}
-	.contact-list-name:hover span[contenteditable="false"]:before {
-		content: "";
-	}
-	.contact-list-name:hover span[contenteditable="true"]:before {
-		content: "click to edit";
-		position: absolute;
-		top: -20px;
-		left: 9px;
-		font-size: 11px;
-		font-weight: 300;
-		color: #adadad;
-		letter-spacing: 1px;
-	}
-}
-
-/** contact css via https://codepen.io/shshaw/pen/WXMdwE 😻 */
-.contact {
-	display: inline-block;
-	position: relative;
-	padding: 0;
-	margin: 0;
-	min-height: 40px;
-	min-width: 40px;
-	cursor: pointer;
-	padding-right: 5px;
-}
-.contact__state {
-	position: absolute;
-	top: 0;
-	left: 0;
-	opacity: 0;
-}
-
-.contact__icon {
-	position: absolute;
-	top: 0;
-	bottom: 0;
-	left: 0;
-	width: 280px;
-	height: 100%;
-	margin: auto;
-	fill: none;
-	stroke: #27fdc7;
-	stroke-width: 2;
-	stroke-linejoin: round;
-	stroke-linecap: round;
-	z-index: 1;
-}
-
-.contact__state:checked ~ .contact-list-name {
-	text-decoration: line-through;
-}
-
-.contact__box {
-	stroke-dasharray: 56.1053, 56.1053;
-	stroke-dashoffset: 0;
-	transition-delay: 0.16s;
-}
-.contact__check {
-	stroke: #27fdc7;
-	stroke-dasharray: 9.8995, 9.8995;
-	stroke-dashoffset: 9.8995;
-	transition-duration: 0.25s;
-}
-
-.contact__state:checked ~ .contact__icon .contact__box {
-	stroke-dashoffset: 56.1053;
-	transition-delay: 0s;
-	stroke-dasharray: 56.1053, 56.1053;
-	stroke-dashoffset: 0;
-	stroke: red;
-}
-
-.contact__state:checked ~ .contact__icon .contact__check {
-	stroke-dashoffset: 0;
-	transition-delay: 0s;
 }

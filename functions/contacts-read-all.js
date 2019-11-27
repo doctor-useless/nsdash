@@ -7,7 +7,6 @@ const client = new faunadb.Client({
 })
 
 exports.handler = async (event, context) => {
-  console.log('Function `contact-read-all` invoked')
   return client.query(q.Paginate(q.Match(q.Ref('indexes/all_contacts'))))
     .then((response) => {
       const contactRefs = response.data
