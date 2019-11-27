@@ -3,8 +3,7 @@ import './Contacts.css'
 import ContentEditable from '../ContentEditable'
 import SettingsMenu from '../SettingsMenu'
 import SettingsIcon from '../SettingsIcon'
-import api from '../../utils/api'
-import sortByDate from '../../utils/sortByDate'
+import api from '../../utils/contacts-api'
 import isLocalHost from '../../utils/isLocalHost'
 
 export default class Contacts extends Component {
@@ -29,27 +28,38 @@ export default class Contacts extends Component {
         })
     }
     saveContact = (e) => {
-        e.preventDefault()
-        const { contacts } = this.state
-        const contactValue = this.inputElement.value
+        e.preventDefault();
+        const { contacts } = this.state;
+        const contactNameValue = this.inputNameElement.value;
+        const contactEmailValue = this.inputEmailElement.value;
+        const contactPhoneValue = this.inputPhoneElement.value;
+        const contactNoteValue = this.inputNoteElement.value;
 
-        if (!contactValue) {
-            this.inputElement.focus()
-            return false
+        if (!contactNameValue) {
+            this.inputNameElement.focus();
+            return false;
+        } else if (!contactEmailValue && !contactPhoneValue) {
+            this.inputEmailElement.focus();
+            return false;
         }
 
-        // reset input to empty
-        this.inputElement.value = ''
+        // reset inputs to empty
+        this.inputNameElement.value = '';
+        this.inputEmailElement.value = '';
+        this.inputPhoneElement.value = '';
+        this.inputNoteElement.value = '';
 
         const contactInfo = {
-            name: contactValue,
-            completed: false,
+            name: contactNameValue,
+            email: contactEmailValue,
+            phone: contactPhoneValue,
+            note: contactNoteValue
         }
+
         // Optimistically add contact to UI
         const newContactArray = [{
-            data: contactInfo,
-            ts: new Date().getTime() * 10000
-        }]
+            data: contactInfo
+        }];
 
         const optimisticContactState = newContactArray.concat(contacts)
 
@@ -108,33 +118,6 @@ export default class Contacts extends Component {
             })
         })
     }
-    handleContactCheckbox = (event) => {
-        const { contacts } = this.state
-        const { target } = event
-        const contactCompleted = target.checked
-        const contactId = target.dataset.id
-
-        const updatedContacts = contacts.map((contact, i) => {
-            const { data } = contact
-            const id = getContactId(contact)
-            if (id === contactId && data.completed !== contactCompleted) {
-                data.completed = contactCompleted
-            }
-            return contact
-        })
-
-        this.setState({
-            contacts: updatedContacts
-        }, () => {
-            api.update(contactId, {
-                completed: contactCompleted
-            }).then(() => {
-                console.log(`update contact ${contactId}`, contactCompleted)
-            }).catch((e) => {
-                console.log('An API error occurred', e)
-            })
-        })
-    }
     updateContactName = (event, currentValue) => {
         let isDifferent = false
         const contactId = event.target.dataset.key
@@ -149,58 +132,59 @@ export default class Contacts extends Component {
         })
 
         // only set state if input different
-        if (isDifferent) {
-            this.setState({
-                contacts: updatedContacts
-            }, () => {
-                api.update(contactId, {
-                    name: currentValue
-                }).then(() => {
-                    console.log(`update contact ${contactId}`, currentValue)
-                }).catch((e) => {
-                    console.log('An API error occurred', e)
-                })
-            })
-        }
+        if (isDifferent)
+            updateState(this, updatedContacts, contactId, {name:currentValue}, currentValue);
     }
-    clearCompleted = () => {
-        const { contacts } = this.state
+    updateContactEmail = (event, currentValue) => {
+        let isDifferent = false
+        const contactId = event.target.dataset.key
 
-        // Optimistically remove contacts from UI
-        const data = contacts.reduce((acc, current) => {
-            if (current.data.completed) {
-                // save item being removed for rollback
-                acc.completedContactIds = acc.completedContactIds.concat(getContactId(current))
-                return acc
+        const updatedContacts = this.state.contacts.map((contact, i) => {
+            const id = getContactId(contact)
+            if (id === contactId && contact.data.email !== currentValue) {
+                contact.data.email = currentValue
+                isDifferent = true
             }
-            // filter deleted contact out of the contacts list
-            acc.optimisticState = acc.optimisticState.concat(current)
-            return acc
-        }, {
-            completedContactIds: [],
-            optimisticState: []
+            return contact
         })
 
-        // only set state if completed contacts exist
-        if (!data.completedContactIds.length) {
-            alert('Please check off some contacts to batch remove them')
-            this.closeModal()
-            return false
-        }
+        // only set state if input different
+        if (isDifferent)
+            updateState(this, updatedContacts, contactId, {email:currentValue}, currentValue);
+    }
+    updateContactPhone = (event, currentValue) => {
+        let isDifferent = false
+        const contactId = event.target.dataset.key
 
-        this.setState({
-            contacts: data.optimisticState
-        }, () => {
-            setTimeout(() => {
-                this.closeModal()
-            }, 600)
-
-            api.batchDelete(data.completedContactIds).then(() => {
-                console.log(`Batch removal complete`, data.completedContactIds)
-            }).catch((e) => {
-                console.log('An API error occurred', e)
-            })
+        const updatedContacts = this.state.contacts.map((contact, i) => {
+            const id = getContactId(contact)
+            if (id === contactId && contact.data.phone !== currentValue) {
+                contact.data.phone = currentValue
+                isDifferent = true
+            }
+            return contact
         })
+
+        // only set state if input different
+        if (isDifferent)
+            updateState(this, updatedContacts, contactId, {phone:currentValue}, currentValue);
+    }
+    updateContactNote = (event, currentValue) => {
+        let isDifferent = false
+        const contactId = event.target.dataset.key
+
+        const updatedContacts = this.state.contacts.map((contact, i) => {
+            const id = getContactId(contact)
+            if (id === contactId && contact.data.note !== currentValue) {
+                contact.data.note = currentValue
+                isDifferent = true
+            }
+            return contact
+        })
+
+        // only set state if input different
+        if (isDifferent)
+            updateState(this, updatedContacts, contactId, {note:currentValue}, currentValue);
     }
     closeModal = (e) => {
         this.setState({
@@ -213,19 +197,16 @@ export default class Contacts extends Component {
         })
     }
     renderContacts() {
-        const { contacts } = this.state
+        let { contacts } = this.state;
 
         if (!contacts || !contacts.length) {
             // Loading State here
-            return null
+            return null;
         }
 
-        const timeStampKey = 'ts'
-        const orderBy = 'desc' // or `asc`
-        const sortOrder = sortByDate(timeStampKey, orderBy)
-        const contactsByDate = contacts.sort(sortOrder)
+        console.log(contacts);
 
-        return contactsByDate.map((contact, i) => {
+        return contacts.map((contact, i) => {
             const { data, ref } = contact
             const id = getContactId(contact)
             // only show delete button after create API response returns
@@ -233,28 +214,39 @@ export default class Contacts extends Component {
             if (ref) {
                 deleteButton = (<button data-id={id} onClick={this.deleteContact}>delete</button>)
             }
-            const boxIcon = (data.completed) ? '#contact__box__done' : '#contact__box'
             return (
                 <div key={i} className='contact-item'>
                     <label className="contact">
-                        <input
-                            data-id={id}
-                            className="contact__state"
-                            type="checkbox"
-                            onChange={this.handleContactCheckbox}
-                            checked={data.completed}
-                        />
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 25" className="contact__icon">
-                            <use xlinkHref={`${boxIcon}`} className="contact__box"></use>
-                            <use xlinkHref="#contact__check" className="contact__check"></use>
-                        </svg>
                         <div className='contact-list-name'>
                             <ContentEditable
                                 tagName='span'
                                 editKey={id}
-                                onBlur={this.updateContactName} // save on enter/blur
+                                onBlur={this.updateContactName}
                                 html={data.name}
-                            // onChange={this.handleDataChange} // save on change
+                            />
+                        </div>
+                        <div className='contact-list-email'>
+                            <ContentEditable
+                                tagName='span'
+                                editKey={id}
+                                onBlur={this.updateContactEmail}
+                                html={data.email}
+                            />
+                        </div>
+                        <div className='contact-list-phone'>
+                            <ContentEditable
+                                tagName='span'
+                                editKey={id}
+                                onBlur={this.updateContactPhone}
+                                html={data.phone}
+                            />
+                        </div>
+                        <div className='contact-list-note'>
+                            <ContentEditable
+                                tagName='span'
+                                editKey={id}
+                                onBlur={this.updateContactNote}
+                                html={data.note}
                             />
                         </div>
                     </label>
@@ -265,7 +257,6 @@ export default class Contacts extends Component {
     }
     render() {
         return (
-
             <div className='contact-list'>
                 <h2>
                     Create contact
@@ -274,14 +265,38 @@ export default class Contacts extends Component {
                 <form className='contact-create-wrapper' onSubmit={this.saveContact}>
                     <input
                         className='contact-create-input'
-                        placeholder='Add a contact'
+                        placeholder='name'
                         name='name'
-                        ref={el => this.inputElement = el}
+                        ref={el => this.inputNameElement = el}
+                        autoComplete='off'
+                        style={{ marginRight: 20 }}
+                    />
+                    <input
+                        className='contact-create-input'
+                        placeholder='email'
+                        name='email'
+                        ref={el => this.inputEmailElement = el}
+                        autoComplete='off'
+                        style={{ marginRight: 20 }}
+                    />
+                    <input
+                        className='contact-create-input'
+                        placeholder='phone'
+                        name='phone'
+                        ref={el => this.inputPhoneElement = el}
+                        autoComplete='off'
+                        style={{ marginRight: 20 }}
+                    />
+                    <textarea
+                        className='contact-create-input'
+                        placeholder='note'
+                        name='note'
+                        ref={el => this.inputNoteElement = el}
                         autoComplete='off'
                         style={{ marginRight: 20 }}
                     />
                     <div className='contact-actions'>
-                        <button className='contact-create-button'>Create contact</button>
+                        <button className='contact-create-button'>create contact</button>
                         <SettingsIcon onClick={this.openModal} className='desktop-toggle' />
                     </div>
                 </form>
@@ -291,7 +306,6 @@ export default class Contacts extends Component {
                 <SettingsMenu
                     showMenu={this.state.showMenu}
                     handleModalClose={this.closeModal}
-                    handleClearCompleted={this.clearCompleted}
                 />
             </div>
         )
@@ -310,4 +324,16 @@ function getContactId(contact) {
         return null
     }
     return contact.ref['@ref'].id
+}
+
+function updateState(scope, updatedContacts, contactId, update, currentValue) {
+    scope.setState({
+        contacts: updatedContacts
+    }, () => {
+        api.update(contactId, update).then(() => {
+            console.log(`update contact ${contactId}`, currentValue)
+        }).catch((e) => {
+            console.log('An API error occurred', e)
+        })
+    })
 }

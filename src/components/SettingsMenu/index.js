@@ -20,7 +20,7 @@ export default class Menu extends Component {
     const deleteConfirm = window.confirm("Are you sure you want to clear all completed contacts?");
     if (deleteConfirm) {
       console.log('delete')
-      this.props.handleClearCompleted()
+      //this.props.handleClearCompleted()
     }
   }
   render() {
