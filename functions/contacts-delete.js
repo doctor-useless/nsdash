@@ -1,4 +1,4 @@
-import { getId } from './utils/getId';
+const getId = require('./utils/getId');
 const faunadb = require('faunadb');
 
 const q = faunadb.query;

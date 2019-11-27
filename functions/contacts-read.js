@@ -1,4 +1,4 @@
-import { getId } from './utils/getId';
+const getId = require('./utils/getId');
 const faunadb = require('faunadb');
 
 const q = faunadb.query;
@@ -6,7 +6,7 @@ const client = new faunadb.Client({
   secret: process.env.FAUNADB_SERVER_SECRET
 });
 
-exports.handler = (event, context) => {
+exports.handler = async (event, context) => {
   const id = getId(event.path);
   console.log(`Function 'contact-read' invoked. Read id: ${id}`);
   return client.query(q.Get(q.Ref(`classes/contacts/${id}`)))

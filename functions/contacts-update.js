@@ -1,4 +1,4 @@
-import { getId } from './utils/getId';
+const getId = require('./utils/getId');
 const faunadb = require('faunadb');
 
 const q = faunadb.query;
@@ -6,7 +6,7 @@ const client = new faunadb.Client({
   secret: process.env.FAUNADB_SERVER_SECRET
 });
 
-exports.handler = (event, context) => {
+exports.handler = async (event, context) => {
   const data = JSON.parse(event.body);
   const id = getId(event.path);
   console.log(`Function 'contact-update' invoked. update id: ${id}`);
