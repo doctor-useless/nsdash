@@ -1,15 +1,13 @@
 import React, { Component } from 'react'
 import './Contacts.css'
 import ContentEditable from '../ContentEditable'
-import SettingsMenu from '../SettingsMenu'
-import SettingsIcon from '../SettingsIcon'
+import Confirm from '../Confirm'
 import api from '../../utils/contacts-api'
 import isLocalHost from '../../utils/isLocalHost'
 
 export default class Contacts extends Component {
     state = {
-        contacts: [],
-        showMenu: false
+        contacts: []
     }
     componentDidMount() {
         // Fetch all contacts
@@ -84,10 +82,9 @@ export default class Contacts extends Component {
             })
         })
     }
-    deleteContact = (e) => {
+    deleteContact = (props) => {
         const { contacts } = this.state
-        const contactId = e.target.dataset.id
-
+        const contactId = props.id
         // Optimistically remove contact from UI
         const filteredContacts = contacts.reduce((acc, current) => {
             const currentId = getContactId(current)
@@ -185,16 +182,6 @@ export default class Contacts extends Component {
         if (isDifferent)
             updateState(this, updatedContacts, contactId, { note: currentValue }, currentValue);
     }
-    closeModal = (e) => {
-        this.setState({
-            showMenu: false
-        })
-    }
-    openModal = () => {
-        this.setState({
-            showMenu: true
-        })
-    }
     renderContacts() {
         let { contacts } = this.state;
 
@@ -209,7 +196,14 @@ export default class Contacts extends Component {
             // only show delete button after create API response returns
             let deleteButton
             if (ref) {
-                deleteButton = (<button data-id={id} onClick={this.deleteContact}>delete</button>)
+                deleteButton = (
+                    <Confirm
+                    handleConfirmation={this.deleteContact}
+                    message={'Delete ' + data.name}
+                    action='delete'
+                    id={id}
+                />
+                )
             }
             return (
                 <div key={i} className='contact-item'>
@@ -285,11 +279,6 @@ export default class Contacts extends Component {
                 </form>
 
                 {this.renderContacts()}
-
-                <SettingsMenu
-                    showMenu={this.state.showMenu}
-                    handleModalClose={this.closeModal}
-                />
             </div>
         )
     }
