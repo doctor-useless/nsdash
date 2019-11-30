@@ -8,3 +8,8 @@
 [dev]
   # Local dev command. A.k.a npm start
   command = "react-scripts start"
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

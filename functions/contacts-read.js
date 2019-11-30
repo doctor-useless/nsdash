@@ -10,7 +10,6 @@ exports.handler = async (event, context) => {
   const id = getId(event.path);
   return client.query(q.Get(q.Ref(`classes/contacts/${id}`)))
     .then((response) => {
-      console.log('success', response);
       return {
         statusCode: 200,
         body: JSON.stringify(response)

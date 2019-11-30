@@ -53,7 +53,8 @@ export default class Contacts extends Component {
             name: contactNameValue,
             email: contactEmailValue,
             phone: contactPhoneValue,
-            note: contactNoteValue
+            note: contactNoteValue,
+            date: Date.now()
         }
 
         // Optimistically add contact to UI
@@ -107,10 +108,8 @@ export default class Contacts extends Component {
             contacts: filteredContacts.optimisticState
         })
 
-        // Make API request to delete contact
-        api.delete(contactId).then(() => {
-            console.log(`deleted contact id ${contactId}`)
-        }).catch((e) => {
+        // Make API request to delete contact .then(()=>console.log('done').catch
+        api.delete(contactId).catch((e) => {
             console.log(`There was an error removing ${contactId}`, e)
             // Add item removed back to list
             this.setState({
@@ -204,8 +203,6 @@ export default class Contacts extends Component {
             return null;
         }
 
-        console.log(contacts);
-
         return contacts.map((contact, i) => {
             const { data, ref } = contact
             const id = getContactId(contact)
@@ -284,7 +281,6 @@ export default class Contacts extends Component {
                     />
                     <div className='contact-actions'>
                         <button className='contact-create-button'>create contact</button>
-                        <SettingsIcon onClick={this.openModal} className='desktop-toggle' />
                     </div>
                 </form>
 
@@ -317,9 +313,7 @@ function updateState(scope, updatedContacts, contactId, update, currentValue) {
     scope.setState({
         contacts: updatedContacts
     }, () => {
-        api.update(contactId, update).then(() => {
-            console.log(`update contact ${contactId}`, currentValue)
-        }).catch((e) => {
+        api.update(contactId, update).catch((e) => {
             console.log('An API error occurred', e)
         })
     })

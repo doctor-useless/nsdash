@@ -13,13 +13,13 @@ exports.handler = async (event, context) => {
   if (auth === process.env.NSPHOTO_SECRET) {
     /* parse the string body into a useable JS object */
     const data = JSON.parse(event.body);
+    data.date = Date.now();
     const contactItem = {
       data: data
     }
     /* construct the fauna query */
     return client.query(q.Create(q.Ref('classes/contacts'), contactItem))
       .then((response) => {
-        console.log('success', response)
         /* Success! return the response with statusCode 200 */
         return {
           statusCode: 200,
