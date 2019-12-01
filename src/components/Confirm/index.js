@@ -51,14 +51,10 @@ class Confirmation extends Component {
     return (
       <div className='settings-wrapper' style={{ display: showOrHide }}>
         <div className='settings-content'>
-          <span className='settings-close' onClick={this.props.handleClose} role="img" aria-label='close'>
-            ❌
-        </span>
           <h2>{this.props.message || ''}</h2>
           <div className='settings-section'>
-            <button className='btn-danger' onClick={this.handleConfirmation}>
-              Delete
-          </button>
+            <button className='btn-standard' onClick={this.props.handleClose}>cancel</button>
+            <button className='btn-danger' onClick={this.handleConfirmation}>delete</button>
           </div>
         </div>
       </div>

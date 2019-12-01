@@ -24,7 +24,7 @@
 }
 .settings-close {
   position: absolute;
-  right: 20px;
+  right: 15px;
   top: 15px;
   font-size: 16px;
   cursor: pointer;
@@ -50,15 +50,4 @@
   border: 1px solid;
   font-size: 12px;
   cursor: pointer;
-  &:hover, &.activeClass {
-    color: #fff;
-  }
-}
-
-@media (max-width: 768px) {
-  .settings-close {
-    top: 15px;
-    right: 20px;
-    font-size: 18px;
-  }
 }
