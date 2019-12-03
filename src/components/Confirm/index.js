@@ -53,8 +53,8 @@ class Confirmation extends Component {
         <div className='settings-content'>
           <h2>{this.props.message || ''}</h2>
           <div className='settings-section'>
-            <button className='btn-standard' onClick={this.props.handleClose}>cancel</button>
-            <button className='btn-danger' onClick={this.handleConfirmation}>delete</button>
+            <button onClick={this.props.handleClose}>cancel</button>
+            <button onClick={this.handleConfirmation} className='btn-danger'>delete</button>
           </div>
         </div>
       </div>
