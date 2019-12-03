@@ -13,7 +13,7 @@ export default class App extends Component {
           <AppHeader />
           <Switch>
             <Route exact path='/' render={() => <Home />} />
-            <Route exact path='/contacts' render={() => <Contacts />} />
+            <PrivateRoute exact path='/contacts' render={() => <Contacts />} />
           </Switch>
         </BrowserRouter>
       </div>
