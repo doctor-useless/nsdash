@@ -1,8 +1,6 @@
+//import netlifyIdentity from 'netlify-identity-widget'
 
-
-export default class Auth {
-    isAuthenticated: false,
-    authenticate() {
-    
-    }
+export function isAuthenticated() {
+    //return netlifyIdentity.isAuthenticated();
+    return false;
 }

@@ -1,17 +1,23 @@
 import React, { Component } from 'react'
-import { Redirect } from 'react-router-dom'
+import { Route, Redirect } from 'react-router-dom'
+import { isAuthenticated } from '../../utils/auth';
 
 export default function PrivateRoute({ component, ...rest }) {
     return (
-      <Route
-        {...rest}
-        render={props =>
-          netlifyAuth.isAuthenticated ? (
-            <Component {...props} />
-          ) : (
-            <Redirect to={{ pathname: '/login', state: { from: props.location } }} />
-          )
-        }
-      />
+        <Route
+            {...rest}
+            render={props =>
+                isAuthenticated ? (
+                    <component {...props} />
+                ) : (
+                        <Redirect
+                            to={{
+                                pathname: '/',
+                                state: { from: props.location }
+                            }}
+                        />
+                    )
+            }
+        />
     );
-  }
+}
