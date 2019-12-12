@@ -5,7 +5,6 @@ import AppHeader from './components/AppHeader'
 import Contacts from './components/Contacts'
 import Home from './components/home'
 import PrivateRoute from './components/private-route'
-const url = "https://nsdash.netlify.com/"
 
 export default class App extends Component {
   render() {

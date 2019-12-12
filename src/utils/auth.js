@@ -1,12 +1,5 @@
 import netlifyIdentity from 'netlify-identity-widget'
 
-export function isAuthenticated() {
-    //return netlifyIdentity.isAuthenticated();
-    console.log('unauthorized (test)');
-    return false;
-}
-
-
 export const netlifyAuth = {
     isAuthenticated: false,
     user: null,

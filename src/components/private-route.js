@@ -4,7 +4,7 @@ import { SignIn } from './sign-in'
 import { netlifyAuth } from '../utils/auth'
 
 export default function PrivateRoute({ component, ...options }) {
-    const finalComponent = isAuthenticated() ? component : SignIn;
+    const finalComponent = netlifyAuth.isAuthenticated ? component : SignIn;
   
     return <Route {...options} component={finalComponent} />;
   };
