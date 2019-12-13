@@ -1,10 +1,10 @@
 import React from 'react'
 import { Route } from 'react-router-dom'
-import { SignIn } from './sign-in'
-import { netlifyAuth } from '../utils/auth'
+import { SignIn } from './SignIn'
+import { getCurrentUser } from '../utils/auth'
 
 export default function PrivateRoute({ component, ...options }) {
-    const finalComponent = netlifyAuth.isAuthenticated ? component : SignIn;
+    const finalComponent = getCurrentUser() ? component : SignIn;
   
     return <Route {...options} component={finalComponent} />;
   };

@@ -1,6 +1,6 @@
 import React from 'react'
-import Editable from './Editable'
-import './ContentEditable.css'
+import Editable from './editable'
+import './styles.css'
 
 export default class ContentEditable extends React.Component {
   constructor(props) {

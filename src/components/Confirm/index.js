@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import './Confirm.css' // eslint-disable-line
+import './styles.css'
 
 export default class Confirm extends Component {
   state = {

@@ -1,5 +1,5 @@
 import React from 'react'
-import './SettingIcon.css' // eslint-disable-line
+import './styles.css'
 
 const SettingIcon = (props) => {
   const className = props.className || ''

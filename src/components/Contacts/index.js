@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import './Contacts.css'
+import './styles.css'
 import ContentEditable from '../ContentEditable'
 import Confirm from '../Confirm'
 import api from '../../utils/contacts-api'
-import isLocalHost from '../../utils/isLocalHost'
+import isLocalHost from '../../utils/is-localhost'
 
 export default class Contacts extends Component {
     state = {
